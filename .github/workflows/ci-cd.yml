@@ -28,13 +28,12 @@ jobs:
 
       - name: Atualizar manifest no repositório ArgoCD
         run: |
-          git clone https://${{ secrets.USER_GITHUB }}:${{ secrets.TOKEN_GITHUB }}@github.com/${{ secrets.USER_GITHUB }}/hello-app-manifests.git
+          git clone https://nathanols:${{ secrets.GH_TOKEN }}@github.com/nathanols/hello-app-manifests.git
           cd hello-app-manifests
-          sed -i "s#image: .*\$#image: ${{ secrets.DOCKER_USERNAME }}/hello-app:${{ env.VERSION }}#g" deployment.yaml
+          sed -i "s#image: .*\$#image: ${{ secrets.DOCKER_USERNAME }}/hello-app:${{ env.VERSION }}#" deployment.yaml
           git config user.name "github-actions"
           git config user.email "actions@github.com"
           git add deployment.yaml
           git commit -m "Atualiza imagem para versão ${{ env.VERSION }}"
-          git push https://${{ secrets.TOKEN_GITHUB }}@github.com/${{ secrets.USER_GITHUB }}/hello-app-manifests.git
-
+          git push
 
