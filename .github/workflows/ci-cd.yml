@@ -6,19 +6,35 @@ on:
       - main
 
 jobs:
-  build-and-push:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout do código
         uses: actions/checkout@v3
 
+      - name: Definir versão da imagem
+        id: version
+        run: |
+          echo "VERSION=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
+
       - name: Login no Docker Hub
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
-      - name: Build da imagem Docker
-        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/hello-app:latest .
+      - name: Build e push da imagem Docker
+        run: |
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/hello-app:${{ env.VERSION }} .
+          docker push ${{ secrets.DOCKER_USERNAME }}/hello-app:${{ env.VERSION }}
 
-      - name: Push da imagem para o Docker Hub
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/hello-app:latest
+      - name: Atualizar manifest no repositório ArgoCD
+        run: |
+          git clone https://github.com/${{ secrets.GITHUB_USER }}/hello-app-manifests.git
+          cd hello-app-manifests
+          sed -i "s#image: .*\$#image: ${{ secrets.DOCKER_USERNAME }}/hello-app:${{ env.VERSION }}#g" deployment.yaml
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add deployment.yaml
+          git commit -m "Atualiza imagem para versão ${{ env.VERSION }}"
+          git push https://${{ secrets.GITHUB_TOKEN }}@github.com/${{ secrets.GITHUB_USER }}/hello-app-manifests.git
+
 
