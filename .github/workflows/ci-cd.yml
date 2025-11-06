@@ -21,3 +21,4 @@ jobs:
 
       - name: Push da imagem para o Docker Hub
         run: docker push ${{ secrets.DOCKER_USERNAME }}/hello-app:latest
+
