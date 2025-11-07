@@ -93,12 +93,19 @@ Use um diagrama estilo arquitetura de DevOps, mostrando as setas entre GitHub �
   Acesse: Repositório → Settings → Secrets and variables → Actions  
  ```
 2. Configure o Secrets do Github
+Acesse: Repositório → Settings → Secrets and variables → Actions  
    
 | Secret | Descrição | Como Obter |
 | :--- | :---: | :---: |
-| DOCKER_USERNAME  |	Seu usuário do Docker Hub            |                                                |
-| DOCKER_PASSWORD  |	Token de acesso do Docker Hub        | Account Settings → Security → New Access Token |
-| SSH_PRIVATE_KEY  |  Chave SSH para atualizar manifestos  | ssh-keygen -t ed25519 -C "github-actions"      |
+| DOCKER_USERNAME  |	Seu usuário do Docker Hub            |                                                  |
+| DOCKER_PASSWORD  |	Token de acesso do Docker Hub        | Account Settings → Security → New Access Token   |
+| TOKEN_GITHB      |  Chave SSH para atualizar manifestos    | ssh-keygen -t ed25519 -C "github-actions"        |
+| USER_GITHUB      |        Seu usuário do GitHub            |                                                  |
+
+<img width="1913" height="855" alt="Image" src="https://github.com/user-attachments/assets/8fa1bf54-8fc7-405d-96ee-55ce78348496" />  
+  
+<img width="1886" height="868" alt="Image" src="https://github.com/user-attachments/assets/9b680de3-3a51-4b8b-b000-ca9fb7764307" />
+
   
 ## 🧱 Etapa 1 – Aplicação FastAPI
 
