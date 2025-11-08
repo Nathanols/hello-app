@@ -9,7 +9,7 @@
 Este projeto demonstra o **ciclo completo de CI/CD** de uma aplicação **FastAPI** simples, integrando:
 
 - **GitHub Actions** → para build e publicação automatizada da imagem Docker  
-- **Docker Hub** → como registry de imagens  
+- **Docker Hub** → como registro de imagens  
 - **ArgoCD** → para entrega contínua (*GitOps*) no cluster Kubernetes local  
 - **Docker Desktop** → executando o Kubernetes localmente  
 
@@ -28,8 +28,6 @@ flowchart LR
     E -->|Deploy| F[Kubernetes]
     F --> G[Hello App Running 🚀]
 ```
-💡 Sugestão de imagem:
-Use um diagrama estilo arquitetura de DevOps, mostrando as setas entre GitHub → Docker Hub → ArgoCD → Kubernetes.
 
 ## 🧩 Repositórios Envolvidos
 ### 1- Repositório	da Aplicação (hello-app)
@@ -77,19 +75,19 @@ Use um diagrama estilo arquitetura de DevOps, mostrando as setas entre GitHub �
 4. Clicar em **Personal Access Token**
 5. Clicar em **Generate new token**
 6. Dar um nome para o seu token (ex: token-application)
-7. Dar as permissões de Read, Wrie & Delete para o token
+7. Dar as permissões de Read, Write & Delete para o token
 8. Clicar em **Generate**
 9. Copie e salve o token, pois será importante
 <img width="1912" height="859" alt="Image" src="https://github.com/user-attachments/assets/ac12d514-abd0-4d08-adc7-f9127b2a0904" />
 <img width="1920" height="880" alt="Image" src="https://github.com/user-attachments/assets/88976eac-3086-4fdc-a629-d2bdb2e604df" />
   
 ### Passo a passo para configurar o secret no Github
-1. Clone o srepositórios
+1. Clone os repositórios
  ```
   git clone https://github.com/seu-usuario/hello-app.git
   cd compass-python-api-ci-cd  
     
-  git clone https://github.com/seu-usuario/compass-kubernetes-deployments.git  
+  git clone https://github.com/seu-usuario/hello-manifests.git  
   Acesse: Repositório → Settings → Secrets and variables → Actions  
  ```
 2. Configure o Secrets do Github
@@ -167,9 +165,11 @@ jobs:
           git commit -m "Atualiza imagem para versão ${{ env.VERSION }}"
           git push
 ```
-
-💡 Sugestão de imagem:
-Print do pipeline verde no GitHub Actions, mostrando o build e push concluído.
+Após realizar os commits desses arquivos no github verifique se o build e push deu certo.  
+Repositório → Actions → último commit
+  
+<img width="1911" height="864" alt="Image" src="https://github.com/user-attachments/assets/3206fa8d-a555-4a5b-9f59-62b39e423f2a" />  
+OBS: Certifique-se de que as cofigurações do token e acesso estão corretas no arquivo workflow e Docker Hub respectivamente
 
 ## ☸️ Etapa 3 – Manifestos Kubernetes
 
@@ -222,7 +222,7 @@ kubectl port-forward svc/argocd-server -n argocd 8080:443
 ```
 Depois acesse: https://localhost:8080
 
-2️⃣ Pegue a senha inicial:
+2️⃣ Pegue a senha inicial, usuário(admin):
 ```
 kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
 ```
@@ -234,13 +234,11 @@ kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.pas
 | App name        |	                NOME_DA_SUA_APLICACAO                      |
 | Repository URL  |	https://github.com/NOME_USUARIO_GITHUB/hello-manifests.git |
 | Path	          |                   /                                        |
-| Cluster	        |                   https://kubernetes.default.svc           |
+| Cluster	      |                   https://kubernetes.default.svc           |
 | Namespace	      |             default                                        |
-| Sync Policy	    |                  Automatic (Prune + Self Heal)             | 
-...
+| Sync Policy	  |                  Automatic (Prune + Self Heal)             | 
 
-💡 Sugestão de imagem:
-Print da tela do ArgoCD mostrando o app hello-app com status Healthy / Synced.
+<img width="1914" height="869" alt="Image" src="https://github.com/user-attachments/assets/99a2c0bd-7c49-43b9-a798-39e90ada7f63" />
 
 ## 🧪 Etapa 5 – Testando a aplicação
 
@@ -255,6 +253,8 @@ Resultado esperado:
 ```
 {"message": "CI/CD funcionando"}
 ```
+## Resultado esperado
+<img width="1919" height="871" alt="Image" src="https://github.com/user-attachments/assets/e5365332-fbaa-4c9b-990c-16b149cc3a07" />
 
 ## 🧠 Problemas e Soluções Reais  
 ### Erro	Causa	Solução  
@@ -268,32 +268,19 @@ Resultado esperado:
 
 ## 💬 Dicas Finais
 
-✅ Sempre use tags únicas nas imagens Docker
+✅ Sempre use tags únicas nas imagens Docker  
 
-🔁 Configure Auto-Sync + Self-Heal no ArgoCD
+🔁 Configure Auto-Sync + Self-Heal no ArgoCD  
 
-👀 Use kubectl get pods -w para observar atualizações em tempo real
+👀 Use kubectl get pods -w para observar atualizações em tempo real  
 
-🐢 O Docker Desktop pode demorar alguns segundos para baixar novas imagens
+🐢 O Docker Desktop pode demorar alguns segundos para baixar novas imagens  
 
-🏁 Resultado Final
-
-✅ CI/CD completo e funcional
-✅ Deploy automatizado via ArgoCD
-✅ FastAPI rodando no Kubernetes
-✅ Atualização automática ao alterar o código
-
+🏁 Resultado Final  
+  
+✅ CI/CD completo e funcional  
+✅ Deploy automatizado via ArgoCD  
+✅ FastAPI rodando no Kubernetes  
+✅ Atualização automática ao alterar o código  
+  
 🎉 “Hello Argo” prova que automação não é mágica — é integração inteligente!
-
-✨ Sugestões de Imagens para o README
-Tipo	Descrição
-🖼️ Screenshot 1	Pipeline concluído no GitHub Actions
-🖼️ Screenshot 2	ArgoCD com status Healthy / Synced
-🖼️ Screenshot 3	Terminal mostrando kubectl get pods
-🖼️ Screenshot 4	Navegador com a resposta JSON {"message":"CI/CD funcionando"}
-🖼️ Screenshot 5	Diagrama de arquitetura (GitHub → Docker Hub → ArgoCD → K8s)
-
----
-
-Deseja que eu gere esse arquivo (`README.md`) pra você baixar e subir direto pro seu repositório **hello-app**?  
-Posso gerar ele já com os links e formatação perf
